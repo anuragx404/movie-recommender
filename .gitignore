@@ -1,6 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+.env
+
+# Data / Models
 *.pkl
 *.h5
 *.pt
-.venv/
-__pycache__/
-*.pyc
+
+# Jupyter
+.ipynb_checkpoints/
+
+# VSCode/PyCharm
+.vscode/
+.idea/
