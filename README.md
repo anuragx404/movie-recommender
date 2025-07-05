@@ -1,2 +1,22 @@
-# movie-recommender-system
-Movie Recommender System built with Flask. Users can type or select a movie to get instant similar movie recommendations. Features a clean, responsive UI with dynamic search and popup details for each recommendation. Easy to use and mobile-friendly.
+# Movie Recommender System
+
+A content-based movie recommendation system built with Python. It suggests similar movies based on user input using data analysis and machine learning techniques.
+
+## Features
+- Recommends similar movies using cosine similarity
+- Uses preprocessed movie metadata
+- Simple and clean interface (Streamlit or Flask supported)
+
+## Tech Stack
+- Python
+- Pandas, NumPy
+- Scikit-learn
+- Pickle
+- Streamlit / Flask (optional for UI)
+
+## Installation
+
+```bash
+git clone https://github.com/anuragx404/movie-recommender.git
+cd movie-recommender
+pip install -r requirements.txt
