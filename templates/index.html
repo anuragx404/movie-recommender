@@ -5,252 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Movie Recommender</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f2f5;
-      margin: 0;
-      padding: 20px;
-      box-sizing: border-box;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-    }
-
-    .container {
-      max-width: 900px;
-      width: 100%;
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 30px;
-      box-sizing: border-box;
-    }
-
-    /* Right side - controls and recommend (now appearing first) */
-    .control-panel {
-      /* This section should now take precedence or be ordered first */
-      /* No change to flex properties, just order in HTML */
-      flex: 2 1 500px; /* Still takes more space */
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      box-sizing: border-box;
-      position: relative;
-    }
-
-    h1 {
-      margin-top: 0;
-      margin-bottom: 25px;
-      color: #333;
-      text-align: center;
-    }
-
-    label {
-      font-weight: bold;
-      margin-bottom: 8px;
-      color: #555;
-      display: block;
-      font-size: 1rem;
-    }
-
-    /* Wrap input and suggestions in a relative container */
-    .input-wrapper {
-      position: relative;
-      width: 100%;
-      margin-bottom: 0;
-    }
-
-    #movie-input {
-      width: 100%;
-      padding: 12px 14px;
-      font-size: 1rem;
-      border-radius: 6px;
-      border: 1.5px solid #ccc;
-      box-sizing: border-box;
-      background: white;
-      color: black;
-      transition: border-color 0.3s ease;
-      z-index: 10;
-      position: relative;
-    }
-
-    #movie-input:focus {
-      border-color: #61dafb;
-      outline: none;
-      box-shadow: 0 0 6px rgba(97, 218, 251, 0.6);
-    }
-
-    #suggestions {
-      border: 1.5px solid #61dafb;
-      border-top: none;
-      border-radius: 0 0 6px 6px;
-      max-width: 100%;
-      background: #fff;
-      position: absolute;
-      top: 100%; /* directly below input */
-      left: 0;
-      box-sizing: border-box;
-      cursor: pointer;
-      user-select: none;
-      max-height: 180px;
-      overflow-y: auto;
-      box-shadow: 0 4px 10px rgba(97, 218, 251, 0.3);
-      font-size: 1rem;
-      z-index: 9999;
-      display: none; /* hidden initially */
-    }
-
-    #suggestions div {
-      padding: 12px 16px;
-      cursor: pointer;
-      transition: background-color 0.2s ease, color 0.2s ease;
-    }
-
-    #suggestions div:hover,
-    #suggestions .active {
-      background-color: #61dafb;
-      color: #20232a;
-    }
-
-    button#recommend-btn {
-      padding: 14px;
-      background-color: #61dafb;
-      border: none;
-      border-radius: 6px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      cursor: pointer;
-      color: #20232a;
-      transition: background-color 0.3s ease;
-      margin-top: 20px;
-    }
-
-    button#recommend-btn:hover {
-      background-color: #21a1f1;
-      color: white;
-    }
-
-    /* Left side - movie list (now appearing second) */
-    .movie-list {
-      /* This section should now be ordered second */
-      /* No change to flex properties, just order in HTML */
-      flex: 1 1 250px;
-      max-height: 600px;
-      overflow-y: auto;
-      border: 1px solid #ddd;
-      padding: 15px;
-      border-radius: 8px;
-      background: #fafafa;
-      color: #444;
-      font-size: 0.95rem;
-      user-select: none;
-    }
-
-    .movie-list h2 {
-      margin-top: 0;
-      margin-bottom: 15px;
-      font-size: 1.3rem;
-      color: #222;
-      text-align: center;
-    }
-
-    .movie-list ul {
-      list-style: none;
-      padding-left: 0;
-      margin: 0;
-      line-height: 1.5;
-    }
-
-    .movie-list li {
-      padding: 4px 2px;
-      border-bottom: 1px solid #eee;
-      cursor: pointer; /* Indicate it's clickable */
-      transition: background-color 0.2s ease; /* Smooth hover effect */
-    }
-
-    .movie-list li:last-child {
-      border-bottom: none; /* No border for the last item */
-    }
-
-    .movie-list li:hover {
-      background-color: #e6f7ff; /* Light blue background on hover */
-    }
-
-    /* Modal */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6);
-      overflow: auto;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-
-    .modal-content {
-      background: white;
-      border-radius: 10px;
-      max-width: 500px;
-      width: 100%;
-      padding: 25px;
-      position: relative;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from {opacity: 0; transform: translateY(-20px);}
-      to {opacity: 1; transform: translateY(0);}
-    }
-
-    .close {
-      position: absolute;
-      top: 12px;
-      right: 15px;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-      color: #aaa;
-      transition: color 0.2s ease;
-    }
-
-    .close:hover {
-      color: #000;
-    }
-
-    .recommendations ul {
-      list-style: none;
-      padding-left: 0;
-      margin-top: 20px;
-    }
-
-    .recommendations li {
-      background: #e1e5ea;
-      margin-bottom: 10px;
-      padding: 12px 15px;
-      border-radius: 6px;
-      font-size: 1.1rem;
-      color: #333;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-      }
-      .movie-list {
-        max-height: 300px;
-      }
-    }
-
+    body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 20px; display: flex; justify-content: center; }
+    .container { max-width: 900px; width: 100%; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; flex-wrap: wrap; gap: 30px; }
+    .control-panel { flex: 2 1 500px; display: flex; flex-direction: column; }
+    h1 { margin-top: 0; margin-bottom: 25px; color: #333; text-align: center; }
+    label { font-weight: bold; margin-bottom: 8px; color: #555; }
+    .input-wrapper { position: relative; width: 100%; }
+    #movie-input { width: 100%; padding: 12px 14px; font-size: 1rem; border-radius: 6px; border: 1.5px solid #ccc; box-sizing: border-box; }
+    #suggestions { border: 1.5px solid #ccc; border-top: none; border-radius: 0 0 6px 6px; max-width: 100%; background: #fff; position: absolute; top: 100%; left: 0; box-sizing: border-box; max-height: 180px; overflow-y: auto; z-index: 99; display: none; }
+    #suggestions div { padding: 12px 16px; cursor: pointer; }
+    #suggestions div:hover { background-color: #f0f0f0; }
+    button#recommend-btn { padding: 14px; background-color: #007bff; border: none; border-radius: 6px; font-size: 1.1rem; font-weight: bold; cursor: pointer; color: white; margin-top: 20px; }
+    .movie-list { flex: 1 1 250px; max-height: 600px; overflow-y: auto; border: 1px solid #ddd; padding: 15px; border-radius: 8px; }
+    .movie-list h2 { margin-top: 0; text-align: center; }
+    .movie-list ul { list-style: none; padding-left: 0; margin: 0; }
+    .movie-list li { padding: 4px 2px; border-bottom: 1px solid #eee; cursor: pointer; }
+    #recommendations-container { display: none; margin-top: 25px; padding-top: 20px; border-top: 1.5px solid #eee; }
+    #recommendation-title { font-size: 1.3rem; color: #333; margin-top: 0; margin-bottom: 15px; }
+    #recommendation-list { list-style: none; padding-left: 0; margin: 0; }
+    #recommendation-list li { background: #e9ecef; margin-bottom: 10px; padding: 12px 15px; border-radius: 6px; }
   </style>
 </head>
 <body>
@@ -258,16 +31,17 @@
   <div class="container">
     <div class="control-panel">
       <h1>Movie Recommender</h1>
-      <label for="movie-input">Type or select a movie:</label>
-
+      <label for="movie-input">Type a movie:</label>
       <div class="input-wrapper">
-        <input type="text" id="movie-input" autocomplete="off" placeholder="Start typing a movie..." />
+        <input type="text" id="movie-input" autocomplete="off" placeholder="e.g., The Dark Knight" />
         <div id="suggestions"></div>
       </div>
-
       <button id="recommend-btn">Recommend</button>
+      <div id="recommendations-container">
+        <h2 id="recommendation-title"></h2>
+        <ul id="recommendation-list"></ul>
+      </div>
     </div>
-
     <div class="movie-list">
       <h2>All Movies</h2>
       <ul id="all-movies-list">
@@ -278,35 +52,20 @@
     </div>
   </div>
 
-  <div id="recommendationModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2 id="modalTitle"></h2>
-      <div class="recommendations">
-        <ul id="recommendationsList"></ul>
-      </div>
-    </div>
-  </div>
-
   <script>
-    const modal = document.getElementById('recommendationModal');
-    const closeBtn = document.querySelector('.close');
-    const modalTitle = document.getElementById('modalTitle');
-    const recommendationsList = document.getElementById('recommendationsList');
     const recommendBtn = document.getElementById('recommend-btn');
-
+    const recommendationsContainer = document.getElementById('recommendations-container');
+    const recommendationTitle = document.getElementById('recommendation-title');
+    const recommendationList = document.getElementById('recommendation-list');
     const movieInput = document.getElementById('movie-input');
     const suggestions = document.getElementById('suggestions');
     const allMoviesList = document.getElementById('all-movies-list');
-
     const allMovies = [{% for movie in movies %}"{{ movie }}",{% endfor %}];
 
-    // Function to fetch and display recommendations (reusable)
     function getRecommendations(movieName) {
-      modalTitle.textContent = `Recommendations for "${movieName}"`;
-      recommendationsList.innerHTML = '<li>Loading...</li>';
-      modal.style.display = 'flex';
-
+      recommendationsContainer.style.display = 'block';
+      recommendationTitle.textContent = `Recommendations for "${movieName}"`;
+      recommendationList.innerHTML = '<li>Loading...</li>';
       fetch('/recommend', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -314,83 +73,55 @@
       })
       .then(response => response.json())
       .then(data => {
-        recommendationsList.innerHTML = '';
+        recommendationList.innerHTML = '';
         if (data.recommendations && data.recommendations.length > 0) {
             data.recommendations.forEach(rec => {
                 const li = document.createElement('li');
                 li.textContent = rec;
-                recommendationsList.appendChild(li);
+                recommendationList.appendChild(li);
             });
         } else {
-            recommendationsList.innerHTML = '<li>No recommendations found.</li>';
+            recommendationList.innerHTML = '<li>No recommendations found for this movie.</li>';
         }
-      })
-      .catch((error) => {
-        console.error('Error fetching recommendations:', error);
-        recommendationsList.innerHTML = '<li>Error loading recommendations. Please try again.</li>';
       });
     }
 
-    // Event listener for the "Recommend" button
     recommendBtn.addEventListener('click', () => {
       const movie = movieInput.value.trim();
-      if (!movie) {
-        alert('Please type or select a movie first!');
-        return;
-      }
-      getRecommendations(movie);
+      if (movie) getRecommendations(movie);
     });
 
-    // Event listener for clicking on movie items in the "All Movies" list
     allMoviesList.addEventListener('click', (event) => {
-      if (event.target.tagName === 'LI' && event.target.classList.contains('movie-item')) {
+      if (event.target.tagName === 'LI') {
         const selectedMovie = event.target.textContent.trim();
-        movieInput.value = selectedMovie; // Update the input field with the selected movie
-        getRecommendations(selectedMovie); // Trigger recommendations for the clicked movie
+        movieInput.value = selectedMovie;
+        getRecommendations(selectedMovie);
       }
     });
 
-    closeBtn.onclick = () => modal.style.display = 'none';
-
-    window.onclick = e => {
-      if (e.target == modal) {
-        modal.style.display = 'none';
-      }
-    };
-
-    // Suggestion logic
     movieInput.addEventListener('input', () => {
       const query = movieInput.value.trim().toLowerCase();
       if (!query) {
         suggestions.style.display = 'none';
-        suggestions.innerHTML = '';
         return;
       }
-      const filtered = allMovies.filter(m => m.toLowerCase().includes(query)).slice(0,5);
-
-      if (filtered.length === 0) {
-        suggestions.style.display = 'none';
-        suggestions.innerHTML = '';
-        return;
-      }
-
-      suggestions.innerHTML = filtered.map(m => `<div class="suggestion-item">${m}</div>`).join('');
-      suggestions.style.display = 'block';
-
-      document.querySelectorAll('.suggestion-item').forEach(item => {
-        item.addEventListener('click', e => {
-          movieInput.value = e.target.textContent;
+      const filtered = allMovies.filter(m => m.toLowerCase().includes(query)).slice(0, 5);
+      suggestions.innerHTML = '';
+      filtered.forEach(m => {
+        const div = document.createElement('div');
+        div.textContent = m;
+        div.addEventListener('click', () => {
+          movieInput.value = m;
           suggestions.style.display = 'none';
-          suggestions.innerHTML = '';
         });
+        suggestions.appendChild(div);
       });
+      suggestions.style.display = filtered.length > 0 ? 'block' : 'none';
     });
 
-    // Close suggestions if click outside
     document.addEventListener('click', e => {
-      if (e.target !== movieInput && !suggestions.contains(e.target)) {
+      if (e.target !== movieInput) {
         suggestions.style.display = 'none';
-        suggestions.innerHTML = '';
       }
     });
   </script>
