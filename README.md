@@ -12,7 +12,7 @@ A content-based movie recommendation system built with Python. It suggests simil
 - Pandas, NumPy
 - Scikit-learn
 - Pickle
-- Streamlit / Flask (optional for UI)
+- Flask 
 
 ## Installation
 

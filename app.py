@@ -31,6 +31,7 @@ def recommend(movie_title):
 
 @app.route('/')
 def index():
+    
     return render_template('index.html', movies=movie_titles)
 
 
